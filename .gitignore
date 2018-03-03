@@ -1,4 +1,6 @@
 *.pyc
 training.xml
 *~
+training_data
+!training_data/negative
 node_modules/**/*

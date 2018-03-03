@@ -25,8 +25,8 @@ class OpenCVCapture(object):
         """
         # Open the camera.
         self._camera = cv2.VideoCapture(device_id)
-        # self._camera.set(3,160)
-        #self._camera.set(4,120)
+        self._camera.set(3,320)
+        self._camera.set(4,240)
         if not self._camera.isOpened():
             self._camera.open()
         # Start a thread to continuously capture frames.
