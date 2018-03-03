@@ -27,7 +27,9 @@ class MMConfig (CommonConfig):
     DEFAULT_CLASS_ATTR = 'defaultClass'
     EVERYONE_CLASS_ATTR = 'everyoneClass'
     WELCOME_MESSAGE_ATTR = 'welcomeMessage'
-    
+    MOTION_STOP_DELAY = 'motionStopDelay'
+    MOTION_DETECTION_THRESHOLD = 'motionDetectionThreshold'
+
     @classmethod
     def toNode(cls, type, message):
         print(json.dumps({type: message}))
@@ -53,7 +55,7 @@ class MMConfig (CommonConfig):
     @classmethod
     def getWelcomeMessage(cls):
         return cls.get(cls.WELCOME_MESSAGE_ATTR)
-    
+
     @classmethod
     def getUseUSBCam(cls):
         return cls.get(cls.USE_USB_CAM_ATTR)
@@ -62,7 +64,18 @@ class MMConfig (CommonConfig):
     def getThreshold(cls):
         return cls.get(cls.THRESHOLD_ATTR)
 
-    
+    @classmethod
+    def getMotionStopDelay(cls):
+        return cls.get(cls.MOTION_STOP_DELAY)
+
+    @classmethod
+    def getMotionDetectionThreshold(cls):
+        return cls.get(cls.MOTION_DETECTION_THRESHOLD)
+
+    @classmethod
+    def getThreshold(cls):
+        return cls.get(cls.THRESHOLD_ATTR)
+
     @classmethod
     def get(cls,key):
         return cls.CONFIG_DATA[key]

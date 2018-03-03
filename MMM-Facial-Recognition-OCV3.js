@@ -30,7 +30,13 @@ Module.register('MMM-Facial-Recognition-OCV3', {
         //Set of modules which should be shown for every user
         everyoneClass: "everyone",
         // Boolean to toggle welcomeMessage
-        welcomeMessage: true
+        welcomeMessage: true,
+        // Notificaiton Delay after movement stops being sensed (in seconds).
+        motionStopDelay: 5,
+        // Threshold for motion detection, smaller numbers means more sensitive
+        detectionThreshold: 1000,
+        // Turn off display when no motion is detected.
+        turnOffDisplay: true,
     },
 
     // Define required translations.
