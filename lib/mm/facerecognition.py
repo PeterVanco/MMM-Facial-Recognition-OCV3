@@ -60,7 +60,8 @@ signal.signal(signal.SIGINT, shutdown)
 time.sleep(1)
 
 frame = camera.read()
-if frame == None:
+
+if frame is None:
     MMConfig.toNode("status", 'Camera Failed to Initialize! Shutting Down.')
     camera.stop()
     sys.exit(1)
@@ -91,8 +92,7 @@ def detectMotion(image):
     # dilate the thresholded image to fill in holes, then find contours
     # on thresholded image
     thresh = cv2.dilate(thresh, None, iterations=2)
-    (cnts, _) = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
-                                 cv2.CHAIN_APPROX_SIMPLE)
+    (_, cnts, _) = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     max = 0
     # loop over the contours
@@ -159,11 +159,16 @@ def detectFace(image):
         # callback to node helper
         MMConfig.toNode("login", {"user": current_user, "confidence": None})
 
+timeToSleepNoMotion = 1
+
 while True:
     # Sleep for x seconds specified in module config
-    time.sleep(MMConfig.getInterval())
+    timeToSleep = MMConfig.getInterval()
+    if last_motion is None and timeToSleep < timeToSleepNoMotion:
+        timeToSleep = timeToSleepNoMotion
+    time.sleep(timeToSleep)
+    
     # if detecion is true, will be used to disable detection if you use a PIR sensor and no motion is detected
-
     if (detection_active is True or motion_detection_active is True):
         # Get image
         image = camera.read()
@@ -171,5 +176,5 @@ while True:
         if motion_detection_active is True:
             detectMotion(image)
 
-        if detection_active is True:
+        if detection_active is True and last_motion != None:
             detectFace(image)

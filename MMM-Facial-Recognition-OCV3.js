@@ -34,7 +34,7 @@ Module.register('MMM-Facial-Recognition-OCV3', {
         // Notificaiton Delay after movement stops being sensed (in seconds).
         motionStopDelay: 5,
         // Threshold for motion detection, smaller numbers means more sensitive
-        detectionThreshold: 1000,
+        motionDetectionThreshold: 1000,
         // Turn off display when no motion is detected.
         turnOffDisplay: true,
     },

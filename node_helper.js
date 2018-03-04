@@ -2,14 +2,16 @@
 
 const NodeHelper = require('node_helper');
 const PythonShell = require('python-shell');
+const { exec } = require('child_process');
 
 var pythonStarted = false;
 
 module.exports = NodeHelper.create({
 
     activateMonitor: function () {
-        return;
         if (this.config.turnOffDisplay) {
+            exec("DISPLAY=:0 xset dpms force on", null);
+	    return;
             // Check if hdmi output is already on
             exec("/opt/vc/bin/tvservice -s").stdout.on("data", function(data) {
                 if (data.indexOf("0x120002") !== -1)
@@ -50,12 +52,12 @@ module.exports = NodeHelper.create({
                 self.sendSocketNotification('user', {action: "logout", user: message.logout.user - 1});
             }
             if (message.hasOwnProperty("motion-detected")) {
-                self.log("motion detected");
+                console.log("motion detected");
                 self.sendSocketNotification("motion-detected");
                 self.activateMonitor();
             }
             if (message.hasOwnProperty("motion-stopped")) {
-                self.log("motion stopped");
+                console.log("motion stopped");
                 self.sendSocketNotification("motion-stopped");
                 self.deactivateMonitor();
             }
