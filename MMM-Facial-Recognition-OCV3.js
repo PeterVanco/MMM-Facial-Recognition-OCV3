@@ -121,12 +121,12 @@ Module.register('MMM-Facial-Recognition-OCV3', {
         } else if (payload.action == "logout") {
             this.logout_user();
             this.current_user = null;
-        } else if (payload == "MOTION_DETECTED") {
+        } else if (notification == "MOTION_DETECTED") {
             this.motionDetected = true;
-            this.sendNotification("MOTION_DETECTED", new Date());
-        } else if (payload == "MOTION_STOPPED") {
+            this.sendNotification(notification, payload);
+        } else if (notification == "MOTION_STOPPED") {
             this.motionDetected = false;
-            this.sendNotification("MOTION_STOPPED", new Date());
+            this.sendNotification(notification, payload);
         }
     },
 

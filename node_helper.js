@@ -8,10 +8,18 @@ var pythonStarted = false;
 
 module.exports = NodeHelper.create({
 
+    start: function() {
+        this.activateMonitor();
+    },
+
+    stop: function() {
+        exec("DISPLAY=:0 xset dpms 600", null);
+    },
+
     activateMonitor: function() {
         if (this.config.turnOffDisplay) {
             exec("DISPLAY=:0 xset dpms force on", null);
-            exec("DISPLAY=:0 xset dpms " + this.config.stayAwakeAfterMotionStop, null);
+            exec("DISPLAY=:0 xset dpms " + (this.config.stayAwakeAfterMotionStop + this.config.motionStopDelay), null);
             // Check if hdmi output is already on
             // exec("/opt/vc/bin/tvservice -s").stdout.on("data", function(data) {
             //     if (data.indexOf("0x120002") !== -1)
@@ -53,12 +61,12 @@ module.exports = NodeHelper.create({
             }
             if (message.hasOwnProperty("motion-detected")) {
                 console.log("motion detected");
-                self.sendSocketNotification("MOTION_DETECTED");
+                self.sendSocketNotification("MOTION_DETECTED", {});
                 self.activateMonitor();
             }
             if (message.hasOwnProperty("motion-stopped")) {
                 console.log("motion stopped");
-                self.sendSocketNotification("MOTION_STOPPED");
+                self.sendSocketNotification("MOTION_STOPPED", {});
                 self.deactivateMonitor();
             }
         });
