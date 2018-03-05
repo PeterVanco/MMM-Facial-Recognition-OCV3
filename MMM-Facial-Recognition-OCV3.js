@@ -32,12 +32,16 @@ Module.register('MMM-Facial-Recognition-OCV3', {
         // Boolean to toggle welcomeMessage
         welcomeMessage: true,
         // Notificaiton Delay after movement stops being sensed (in seconds).
-        motionStopDelay: 5,
+        motionStopDelay: 60,
         // Threshold for motion detection, smaller numbers means more sensitive
         motionDetectionThreshold: 1000,
         // Turn off display when no motion is detected.
         turnOffDisplay: true,
+        // Time to keep the display on after motion stopped (in secconds)
+        stayAwakeAfterMotionStop: 60,
     },
+
+    motionDetected: false,
 
     // Define required translations.
     getTranslations: function() {
@@ -114,11 +118,20 @@ Module.register('MMM-Facial-Recognition-OCV3', {
                     title: this.translate("title")
                 });
             }
-        }
-        else if (payload.action == "logout") {
+        } else if (payload.action == "logout") {
             this.logout_user();
             this.current_user = null;
+        } else if (payload == "MOTION_DETECTED") {
+            this.motionDetected = true;
+            this.sendNotification("MOTION_DETECTED", new Date());
+        } else if (payload == "MOTION_STOPPED") {
+            this.motionDetected = false;
+            this.sendNotification("MOTION_STOPPED", new Date());
         }
+    },
+
+    isMotionDetected: () => {
+        return this.motionDetected;
     },
 
     notificationReceived: function(notification, payload, sender) {

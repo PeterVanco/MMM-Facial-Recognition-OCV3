@@ -2,28 +2,28 @@
 
 const NodeHelper = require('node_helper');
 const PythonShell = require('python-shell');
-const { exec } = require('child_process');
+const {exec} = require('child_process');
 
 var pythonStarted = false;
 
 module.exports = NodeHelper.create({
 
-    activateMonitor: function () {
+    activateMonitor: function() {
         if (this.config.turnOffDisplay) {
             exec("DISPLAY=:0 xset dpms force on", null);
-	    return;
+            exec("DISPLAY=:0 xset dpms " + this.config.stayAwakeAfterMotionStop, null);
             // Check if hdmi output is already on
-            exec("/opt/vc/bin/tvservice -s").stdout.on("data", function(data) {
-                if (data.indexOf("0x120002") !== -1)
-                    exec("/opt/vc/bin/tvservice --preferred && chvt 6 && chvt 7", null);
-            });
+            // exec("/opt/vc/bin/tvservice -s").stdout.on("data", function(data) {
+            //     if (data.indexOf("0x120002") !== -1)
+            //         exec("/opt/vc/bin/tvservice --preferred && chvt 6 && chvt 7", null);
+            // });
         }
     },
 
-    deactivateMonitor: function () {
-        return;
+    deactivateMonitor: function() {
         if (this.config.turnOffDisplay) {
-            exec("/opt/vc/bin/tvservice -o", null);
+            exec("DISPLAY=:0 xset dpms " + this.config.stayAwakeAfterMotionStop, null);
+            // exec("/opt/vc/bin/tvservice -o", null);
         }
     },
 
@@ -53,12 +53,12 @@ module.exports = NodeHelper.create({
             }
             if (message.hasOwnProperty("motion-detected")) {
                 console.log("motion detected");
-                self.sendSocketNotification("motion-detected");
+                self.sendSocketNotification("MOTION_DETECTED");
                 self.activateMonitor();
             }
             if (message.hasOwnProperty("motion-stopped")) {
                 console.log("motion stopped");
-                self.sendSocketNotification("motion-stopped");
+                self.sendSocketNotification("MOTION_STOPPED");
                 self.deactivateMonitor();
             }
         });
