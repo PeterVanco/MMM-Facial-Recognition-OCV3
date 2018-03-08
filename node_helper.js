@@ -25,7 +25,7 @@ module.exports = NodeHelper.create({
 
     deactivateMonitor: function() {
         if (this.config.turnOffDisplay) {
-            exec("DISPLAY=:0 xset dpms {} {} {}".format(this.config.stayAwakeAfterMotionStop, this.config.stayAwakeAfterMotionStop, this.config.stayAwakeAfterMotionStop), null);
+            exec("DISPLAY=:0 xset dpms " + this.config.stayAwakeAfterMotionStop + " " + this.config.stayAwakeAfterMotionStop + " " + this.config.stayAwakeAfterMotionStop, null);
         }
     },
 
@@ -79,7 +79,7 @@ module.exports = NodeHelper.create({
                 pythonStarted = true;
                 this.python_start();
             }
-            this.activateMonitor();
+            this.deactivateMonitor();
         }
     }
 
