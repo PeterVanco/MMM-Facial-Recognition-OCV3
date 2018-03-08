@@ -3,7 +3,6 @@
 const NodeHelper = require('node_helper');
 const PythonShell = require('python-shell');
 const {exec} = require('child_process');
-const format = require('string-format');
 
 var pythonStarted = false;
 
@@ -12,7 +11,6 @@ module.exports = NodeHelper.create({
     start: function() {
         // there is no config at this time
         // this.activateMonitor();
-        exec("DISPLAY=:0 xset dpms {} {} {}".format(this.config.stayAwakeAfterMotionStop, this.config.stayAwakeAfterMotionStop, this.config.stayAwakeAfterMotionStop), null);
     },
 
     stop: function() {

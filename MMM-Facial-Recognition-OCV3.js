@@ -47,6 +47,7 @@ Module.register('MMM-Facial-Recognition-OCV3', {
     getTranslations: function() {
         return {
             en: "translations/en.json",
+            sk: "translations/sk.json",
             de: "translations/de.json",
             es: "translations/es.json",
             zh: "translations/zh.json",
@@ -59,7 +60,11 @@ Module.register('MMM-Facial-Recognition-OCV3', {
 
     login_user: function() {
 
-        var self = this;
+        const self = this;
+
+        if (this.loginTimeout != null) {
+            clearTimeout(this.loginTimeout);
+        }
 
         MM.getModules().withClass(this.config.defaultClass).exceptWithClass(this.config.everyoneClass).enumerate(function(module) {
             module.hide(1000, function() {
@@ -78,7 +83,7 @@ Module.register('MMM-Facial-Recognition-OCV3', {
 
     logout_user: function() {
 
-        var self = this;
+        const self = this;
 
         MM.getModules().withClass(this.current_user).enumerate(function(module) {
             module.hide(1000, function() {
@@ -98,14 +103,16 @@ Module.register('MMM-Facial-Recognition-OCV3', {
     // Override socket notification handler.
     socketNotificationReceived: function(notification, payload) {
         if (payload.action == "login") {
+
+            if (payload.user == -1) {
+                // this.current_user = this.translate("stranger");
+                // this.current_user_id = payload.user;
+                return;
+            }
+
             if (this.current_user_id != payload.user) {
                 this.logout_user();
-            }
-            if (payload.user == -1) {
-                this.current_user = this.translate("stranger");
-                this.current_user_id = payload.user;
-            }
-            else {
+            } else {
                 this.current_user = this.config.users[payload.user];
                 this.current_user_id = payload.user;
                 this.login_user();
@@ -126,8 +133,15 @@ Module.register('MMM-Facial-Recognition-OCV3', {
                 // });
             }
         } else if (payload.action == "logout") {
-            this.logout_user();
-            this.current_user = null;
+            if (this.loginTimeout != null) {
+                clearTimeout(this.loginTimeout);
+            }
+
+            this.loginTimeout = setTimeout(function() {
+                self.logout_user();
+                self.current_user = null;
+            }, this.config.logoutDelay);
+            // we will handle logout on our own
         } else if (notification === "MOTION_DETECTED") {
             this.motionDetected = true;
             this.sendNotification(notification, payload);
