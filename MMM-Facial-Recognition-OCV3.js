@@ -109,28 +109,41 @@ Module.register('MMM-Facial-Recognition-OCV3', {
                 this.current_user = this.config.users[payload.user];
                 this.current_user_id = payload.user;
                 this.login_user();
+
+                if (this.config.welcomeMessage) {
+                    this.sendNotification("NOTIFICATION", {
+                        notification: this.translate("message").replace("%person", this.current_user),
+                        duration: 5000,
+                    });
+                }
             }
 
             if (this.config.welcomeMessage) {
-                this.sendNotification("SHOW_ALERT", {
-                    type: "notification",
-                    message: this.translate("message").replace("%person", this.current_user),
-                    title: this.translate("title")
-                });
+                // this.sendNotification("SHOW_ALERT", {
+                //     type: "notification",
+                //     message: this.translate("message").replace("%person", this.current_user),
+                //     title: this.translate("title")
+                // });
             }
         } else if (payload.action == "logout") {
             this.logout_user();
             this.current_user = null;
-        } else if (notification == "MOTION_DETECTED") {
+        } else if (notification === "MOTION_DETECTED") {
             this.motionDetected = true;
             this.sendNotification(notification, payload);
-        } else if (notification == "MOTION_STOPPED") {
+            if (this.config.welcomeMessage) {
+                this.sendNotification("NOTIFICATION", {
+                    notification: this.translate("strangerMessage"),
+                    duration: 5000,
+                });
+            }
+        } else if (notification === "MOTION_STOPPED") {
             this.motionDetected = false;
             this.sendNotification(notification, payload);
         }
     },
 
-    isMotionDetected: () => {
+    isMotionDetected: function() {
         return this.motionDetected;
     },
 

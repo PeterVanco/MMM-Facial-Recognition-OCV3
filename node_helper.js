@@ -9,29 +9,23 @@ var pythonStarted = false;
 module.exports = NodeHelper.create({
 
     start: function() {
-        this.activateMonitor();
+        // there is no config at this time
+        // this.activateMonitor();
     },
 
     stop: function() {
-        exec("DISPLAY=:0 xset dpms 600", null);
+        exec("DISPLAY=:0 xset dpms 600 600 600", null);
     },
 
     activateMonitor: function() {
         if (this.config.turnOffDisplay) {
-            exec("DISPLAY=:0 xset dpms force on", null);
-            exec("DISPLAY=:0 xset dpms " + (this.config.stayAwakeAfterMotionStop + this.config.motionStopDelay), null);
-            // Check if hdmi output is already on
-            // exec("/opt/vc/bin/tvservice -s").stdout.on("data", function(data) {
-            //     if (data.indexOf("0x120002") !== -1)
-            //         exec("/opt/vc/bin/tvservice --preferred && chvt 6 && chvt 7", null);
-            // });
+            exec("DISPLAY=:0 xset -dpms", null);
         }
     },
 
     deactivateMonitor: function() {
         if (this.config.turnOffDisplay) {
-            exec("DISPLAY=:0 xset dpms " + this.config.stayAwakeAfterMotionStop, null);
-            // exec("/opt/vc/bin/tvservice -o", null);
+            exec("DISPLAY=:0 xset dpms {} {} {}".format(this.config.stayAwakeAfterMotionStop, this.config.stayAwakeAfterMotionStop, this.config.stayAwakeAfterMotionStop), null);
         }
     },
 
@@ -85,8 +79,8 @@ module.exports = NodeHelper.create({
                 pythonStarted = true;
                 this.python_start();
             }
+            this.activateMonitor();
         }
-        ;
     }
 
 });
