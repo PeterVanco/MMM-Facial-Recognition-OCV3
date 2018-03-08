@@ -126,6 +126,12 @@ Module.register('MMM-Facial-Recognition-OCV3', {
             }
 
         } else if (payload.action == "logout") {
+
+            if (payload.user === -1) {
+                // ignore stranger
+                return;
+            }
+
             if (this.loginTimeout != null) {
                 clearTimeout(this.loginTimeout);
             }
