@@ -104,34 +104,27 @@ Module.register('MMM-Facial-Recognition-OCV3', {
     socketNotificationReceived: function(notification, payload) {
         if (payload.action == "login") {
 
-            if (payload.user == -1) {
+            if (payload.user === -1) {
                 // this.current_user = this.translate("stranger");
                 // this.current_user_id = payload.user;
                 return;
             }
 
-            if (this.current_user_id != payload.user) {
+            if (this.current_user_id !== payload.user) {
                 this.logout_user();
-            } else {
-                this.current_user = this.config.users[payload.user];
-                this.current_user_id = payload.user;
-                this.login_user();
-
-                if (this.config.welcomeMessage) {
-                    this.sendNotification("NOTIFICATION", {
-                        notification: this.translate("message").replace("%person", this.current_user),
-                        duration: 5000,
-                    });
-                }
             }
+
+            this.current_user = this.config.users[payload.user];
+            this.current_user_id = payload.user;
+            this.login_user();
 
             if (this.config.welcomeMessage) {
-                // this.sendNotification("SHOW_ALERT", {
-                //     type: "notification",
-                //     message: this.translate("message").replace("%person", this.current_user),
-                //     title: this.translate("title")
-                // });
+                this.sendNotification("NOTIFICATION", {
+                    notification: this.translate("message").replace("%person", this.current_user),
+                    duration: 5000,
+                });
             }
+
         } else if (payload.action == "logout") {
             if (this.loginTimeout != null) {
                 clearTimeout(this.loginTimeout);
