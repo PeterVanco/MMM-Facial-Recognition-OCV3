@@ -19,13 +19,23 @@ module.exports = NodeHelper.create({
 
     activateMonitor: function() {
         if (this.config.turnOffDisplay) {
+            if (this.deactivateMonitorTimeout != null) {
+                clearTimeout(this.deactivateMonitorTimeout);
+            }
             exec("DISPLAY=:0 xset -dpms", null);
+            exec("DISPLAY=:0 xset dpms force on", null);
         }
     },
 
     deactivateMonitor: function() {
         if (this.config.turnOffDisplay) {
             exec("DISPLAY=:0 xset dpms " + this.config.stayAwakeAfterMotionStop + " " + this.config.stayAwakeAfterMotionStop + " " + this.config.stayAwakeAfterMotionStop, null);
+            if (this.deactivateMonitorTimeout != null) {
+                clearTimeout(this.deactivateMonitorTimeout);
+            }
+            this.deactivateMonitorTimeout = setTimeout(function() {
+                exec("DISPLAY=:0 xset dpms force off", null);
+            }, this.config.stayAwakeAfterMotionStop);
         }
     },
 
