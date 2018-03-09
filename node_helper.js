@@ -13,8 +13,13 @@ module.exports = NodeHelper.create({
         // this.activateMonitor();
     },
 
+    logAndExec: function(command) {
+        console.log("Executing: " + command);
+        exec(command);
+    },
+
     stop: function() {
-        exec("DISPLAY=:0 xset dpms 600 600 600", null);
+        this.logAndExec("DISPLAY=:0 xset dpms 600 600 600");
     },
 
     activateMonitor: function() {
@@ -22,19 +27,20 @@ module.exports = NodeHelper.create({
             if (this.deactivateMonitorTimeout != null) {
                 clearTimeout(this.deactivateMonitorTimeout);
             }
-            exec("DISPLAY=:0 xset -dpms", null);
-            exec("DISPLAY=:0 xset dpms force on", null);
+            this.logAndExec("DISPLAY=:0 xset -dpms");
+            this.logAndExec("DISPLAY=:0 xset dpms force on");
         }
     },
 
     deactivateMonitor: function() {
+        const self = this;
         if (this.config.turnOffDisplay) {
-            exec("DISPLAY=:0 xset dpms " + this.config.stayAwakeAfterMotionStop + " " + this.config.stayAwakeAfterMotionStop + " " + this.config.stayAwakeAfterMotionStop, null);
+            this.logAndExec("DISPLAY=:0 xset dpms " + this.config.stayAwakeAfterMotionStop + " " + this.config.stayAwakeAfterMotionStop + " " + this.config.stayAwakeAfterMotionStop);
             if (this.deactivateMonitorTimeout != null) {
                 clearTimeout(this.deactivateMonitorTimeout);
             }
             this.deactivateMonitorTimeout = setTimeout(function() {
-                exec("DISPLAY=:0 xset dpms force off", null);
+                self.logAndExec("DISPLAY=:0 xset dpms force off");
             }, this.config.stayAwakeAfterMotionStop * 1000);
         }
     },
