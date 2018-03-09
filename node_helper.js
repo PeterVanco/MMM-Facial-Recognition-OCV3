@@ -35,7 +35,7 @@ module.exports = NodeHelper.create({
             }
             this.deactivateMonitorTimeout = setTimeout(function() {
                 exec("DISPLAY=:0 xset dpms force off", null);
-            }, this.config.stayAwakeAfterMotionStop);
+            }, this.config.stayAwakeAfterMotionStop * 1000);
         }
     },
 
