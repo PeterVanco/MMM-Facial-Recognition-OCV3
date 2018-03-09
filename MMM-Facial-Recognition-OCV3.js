@@ -107,6 +107,10 @@ Module.register('MMM-Facial-Recognition-OCV3', {
             if (payload.user === -1) {
                 // this.current_user = this.translate("stranger");
                 // this.current_user_id = payload.user;
+                this.loginTimeout = setTimeout(function() {
+                    self.logout_user();
+                    self.current_user = null;
+                }, this.config.logoutDelay);
                 return;
             }
 
